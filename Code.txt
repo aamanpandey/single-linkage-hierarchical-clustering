@@ -1,0 +1,81 @@
+#I have taken below mentioned sample data for the Agglomerative Hierarchical Clustering
+#code prints the list of groups at each labels 
+#Sample Input
+#arr = [10,7,28,20,35,-9,19,-4,-2]
+#The method used is single-linkage
+
+
+from numpy import sqrt
+import numpy as np
+
+#dis function calculate the Euclidean distance
+def dis(a,b):
+    k=a-b
+    m=k*k
+    d=np.sqrt(m)
+    return d
+
+#The function makes the proximity matrix based on Euclidean distance
+def Proximity_Matrix(pm,label,n,arr):
+    pm1=['ID']
+    for i in range(0,n-1) :
+        pm1.append(label[i])
+    pm.append(pm1)
+    for i in range(1,n):
+        pm2=[]
+        pm2.append(label[i-1])
+        for j in range(1,n):
+            k=dis(arr[i-1],arr[j-1])
+            pm2.append(k)
+        pm.append(pm2)
+    return pm
+
+#The smallest function finds the smallest distance between two variables 
+def smallest(pm,n):   
+    small=-1 
+    k=-1
+    l=-1
+    for i in range(1,n):
+        for j in range (1,n):
+            if small<=-1 and pm[i][j]!=0:
+                small=pm[i][j]
+                k=i
+                l=j
+            if pm[i][j]<small and pm[i][j]!=0:
+                small=pm[i][j]
+                k=i
+                l=j
+    return (small,k,l)
+        
+def cluster():
+    arr = [10,7,28,20,35,-9,19,-4,-2]#sample input
+    label=[10,7,28,20,35,-9,19,-4,-2]#assigning every input to a single cluster
+    le=len(label)
+    group=[]
+    group.append(label)
+    
+    while(len(label)>1):
+        n=len(arr)+1
+        pm= []
+        pm = Proximity_Matrix(pm,label,n,arr)
+        small= smallest(pm,n)
+       
+        k=str(label[int(small[1]-1)])+'/'+str((label[int(small[2]-1)]))
+        n=n-1
+        label1=[]
+        arr1=[]
+        label1.append(k)
+        m=max(arr[(small[1]-1)], arr[(small[2]-1)])
+        arr1.append(m)
+        for i in range(n):
+            if (i!=(small[1]-1) and i!=(small[2]-1)):
+                label1.append(label[i])
+                arr1.append(arr[i])
+
+        label=label1
+        arr=arr1
+        group.append(label)
+    print(group)
+    #group list contain clusters 
+    
+cluster()
